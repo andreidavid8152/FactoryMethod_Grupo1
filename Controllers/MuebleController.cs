@@ -1,4 +1,5 @@
-﻿using FactoryMethod_Grupo1.FactoryMethod;
+﻿using FactoryMethod_Grupo1.Data;
+using FactoryMethod_Grupo1.FactoryMethod;
 using FactoryMethod_Grupo1.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,9 +8,17 @@ namespace FactoryMethod_Grupo1.Controllers
     public class MuebleController : Controller
     {
 
+        private readonly ApplicationDbContext _context;
+
+        public MuebleController(ApplicationDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+
         public IActionResult Index()
         {
-            var muebles = new List<Mueble>();
+            var muebles = _context.Muebles.ToList();
             return View(muebles);
         }
 
@@ -37,9 +46,17 @@ namespace FactoryMethod_Grupo1.Controllers
 
             IMueble mueble = factory.GetMueble(material, color);
 
-            // Aquí puedes procesar el objeto mueble, como guardarlo en la base de datos
-
-            return RedirectToAction("Success");
+            if (mueble is Mueble muebleConcreto)
+            {
+                _context.Muebles.Add(muebleConcreto);
+                _context.SaveChanges();
+                return RedirectToAction("Success");
+            }
+            else
+            {
+                // Manejar el caso en que mueble no es del tipo esperado
+                return View("Error");
+            }
         }
 
         public IActionResult Success()

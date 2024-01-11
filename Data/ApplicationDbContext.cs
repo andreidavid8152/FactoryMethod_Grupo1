@@ -8,11 +8,18 @@ namespace FactoryMethod_Grupo1.Data
     {
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
+            : base(options)
         {
         }
 
         public DbSet<Mueble> Muebles { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Configurar la tabla de Muebles
+            modelBuilder.Entity<Mueble>().ToTable("Muebles");
+        }
     }
 }
