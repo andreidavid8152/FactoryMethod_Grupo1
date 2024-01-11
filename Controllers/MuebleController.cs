@@ -1,10 +1,18 @@
 ﻿using FactoryMethod_Grupo1.FactoryMethod;
+using FactoryMethod_Grupo1.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FactoryMethod_Grupo1.Controllers
 {
     public class MuebleController : Controller
     {
+
+        public IActionResult Index()
+        {
+            var muebles = new List<Mueble>();
+            return View(muebles);
+        }
+
         public IActionResult Create()
         {
             return View();
